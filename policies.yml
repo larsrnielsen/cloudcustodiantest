@@ -1,0 +1,33 @@
+policies:
+  - name: s3-buckets-no-versioning
+    description: |
+      Scan through the S3 buckets to find S3 buckets without versioning
+    resource: s3
+    mode:
+      type: config-rule
+      role: arn:aws:iam::123456789012:role/some-role
+    filters:
+      - and:
+          - "tag:ConfigIgnore": absent
+          - or:
+            - type: value
+              key: Versioning.Status
+              value: Suspended
+            - type: value
+              key: Versioning.Status
+              value: absent
+
+
+  - name: sg-ingress-internet
+    description: |
+      Find security groups that allow Internet traffic with an 0.0.0.0/0 ingress
+    resource: security-group
+    mode:
+      type: config-rule
+      role: arn:aws:iam::123456789012:role/some-role
+    filters:
+      - and:
+          - "tag:ConfigIgnore": absent
+          - type: ingress
+            Cidr:
+              value: "0.0.0.0/0"
