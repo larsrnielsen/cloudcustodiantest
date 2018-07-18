@@ -5,7 +5,7 @@ policies:
     resource: s3
     mode:
       type: config-rule
-      role: arn:aws:iam::123456789012:role/some-role
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
     filters:
       - and:
           - "tag:ConfigIgnore": absent
@@ -24,7 +24,7 @@ policies:
     resource: security-group
     mode:
       type: config-rule
-      role: arn:aws:iam::123456789012:role/some-role
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
     filters:
       - and:
           - "tag:ConfigIgnore": absent

@@ -10,8 +10,9 @@ phases:
   pre_build:
     commands:
       - echo Entered the pre_build phase...
-      - ls $CODEBUILD_SRC_DIR
-      - echo $LAMBDA_ROLE_ARN
+      - echo Running on account $ACCOUNT_ID
+      - echo Lambdas will use role $LAMBDA_ROLE_ARN
+      - sed 's/SOME_ROLE_PATCHED_BY_BUILD_SPEC/$LAMBDA_ROLE_ARN/' policies-$ACCOUNT_ID.yml > policies.yml
       - virtualenv --python=python2 custodian
       - . custodian/bin/activate
       - pip install c7n
