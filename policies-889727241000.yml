@@ -23,8 +23,7 @@ policies:
       find all s3 buckets
     resource: s3
     mode:
-      type: periodic
-      schedule: "rate(1 day)"
+      type: config-rule
       role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
 
   - name: sg-ingress-internet
