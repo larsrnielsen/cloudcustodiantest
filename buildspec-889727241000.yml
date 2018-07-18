@@ -23,7 +23,7 @@ phases:
       - echo Entered the build phase...
       - echo Build started on `date`
       - ls $CODEBUILD_SRC_DIR
-      - custodian -s . policies.yml
+      - custodian run -s . policies.yml
     finally:
       - echo This always runs even if the update or install command fails
   post_build:
