@@ -18,6 +18,14 @@ policies:
               key: Versioning.Status
               value: absent
 
+  - name: s3-buckets-test
+    description: |
+      find all s3 buckets
+    resource: s3
+    mode:
+      type: periodic
+      schedule: "rate(1 day)"
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
 
   - name: sg-ingress-internet
     description: |
