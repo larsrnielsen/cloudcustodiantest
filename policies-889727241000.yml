@@ -4,8 +4,7 @@ policies:
       Scan through the S3 buckets to find S3 buckets without versioning
     resource: s3
     mode:
-      type: periodic
-      schedule: "rate(1 day)"
+      type: config-rule
       role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
     filters:
       - and:
