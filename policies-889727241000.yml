@@ -33,6 +33,7 @@ policies:
               value: "0.0.0.0/0"
 
   - name: s3-buckets-notification
+    version: 2
     description: |
       test notification
     resource: s3
