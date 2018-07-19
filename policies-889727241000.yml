@@ -1,3 +1,4 @@
+---
 policies:
   - name: s3-buckets-no-versioning
     description: |
@@ -30,3 +31,18 @@ policies:
           - type: ingress
             Cidr:
               value: "0.0.0.0/0"
+
+  - name: s3-buckets-notification
+    description: |
+      test notification
+    resource: s3
+    mode:
+      type: periodic
+      schedule: "rate(1 day)"
+    actions:
+      - type: notify
+        to: []
+        transport:
+          type: sns
+          topic: arn:aws:sns:eu-west-1:889727241000:Slack-SNS-Topic-sl
+
