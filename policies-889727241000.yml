@@ -32,7 +32,7 @@ policies:
             Cidr:
               value: "0.0.0.0/0"
 
-  - name: s3-buckets-notification9
+  - name: s3-buckets-notification10
     description: |
       test notification
     resource: s3
