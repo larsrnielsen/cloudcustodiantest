@@ -39,6 +39,7 @@ policies:
     mode:
       type: periodic
       schedule: "rate(1 day)"
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
     actions:
       - type: notify
         to: []
