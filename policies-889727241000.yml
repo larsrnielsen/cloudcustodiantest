@@ -33,7 +33,7 @@ policies:
               value: "0.0.0.0/0"
 
 
-  - name: s3-buckets-notification14
+  - name: s3-buckets-notification15
     description: |
       test notification
     resource: s3
@@ -46,5 +46,5 @@ policies:
         to: []
         transport:
           type: sns
-          topic: arn:aws:sns:eu-west-1:889727241000:Slack-SNS-Topic-slack
+          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
 
