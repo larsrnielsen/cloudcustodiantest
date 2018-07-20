@@ -14,6 +14,8 @@ phases:
       - echo Lambdas will use role $LAMBDA_ROLE_ARN
       - sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^$LAMBDA_ROLE_ARN^" policies-$ACCOUNT_ID.yml > policies.yml
       - sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml
+      - sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$ACCOUNT_ID^" policies.yml
+
 
       - virtualenv --python=python2 custodian
       - . custodian/bin/activate
