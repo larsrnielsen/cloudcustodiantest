@@ -7,7 +7,6 @@ phases:
       - pip install virtualenv
       - apt-get update -y
       - apt-get install git -y
-      - find .
     finally:
       - echo This always runs even if the update or install command fails
   pre_build:
