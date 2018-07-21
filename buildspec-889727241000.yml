@@ -5,7 +5,8 @@ phases:
       - echo Entered the install phase...
       - pip install --upgrade pip
       - pip install virtualenv
-      - apt install git-all
+      - apt update
+      - apt install git
     finally:
       - echo This always runs even if the update or install command fails
   pre_build:
