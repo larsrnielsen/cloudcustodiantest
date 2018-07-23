@@ -3,15 +3,16 @@ phases:
   install:
     commands:
       - echo Entered the install phase...
+      - apt-get update -y
       - pip install --upgrade pip
       - pip install virtualenv
-      - apt-get update -y
-      - apt-get install git -y
     finally:
       - echo This always runs even if the update or install command fails
   pre_build:
     commands:
       - echo Entered the pre_build phase...
+      - echo $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - echo $CODEBUILD_SOURCE_VERSION
       - echo Running on account $ACCOUNT_ID
       - echo Lambdas will use role $LAMBDA_ROLE_ARN
       - sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^$LAMBDA_ROLE_ARN^" policies-$ACCOUNT_ID.yml > policies.yml
