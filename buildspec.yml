@@ -11,6 +11,7 @@ phases:
       - apt-get update -y
       - pip install --upgrade pip
       - pip install virtualenv
+      - apt-get install jq -y
     finally:
       - echo This always runs even if the update or install command fails
   pre_build:
