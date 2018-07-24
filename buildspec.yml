@@ -41,7 +41,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      - while read -r accid < /tmp/changed_github_files.txt; do sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^arn:aws:iam::$accid:role/$LAMBDA_ROLE_NAME^" policies-$accid.yml > policies.yml; sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml; sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$accid^" policies.yml; custodian run --assume arn:aws:iam::$accid:role/$CC_ROLE_NAME -s . policies-$accid.yml; done
+      - while read -r accid < /tmp/changed_github_files.txt; do sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^arn:aws:iam::$accid:role/$LAMBDA_ROLE_NAME^" policies-$accid.yml > policies.yml; sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml; sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$accid^" policies.yml; custodian run --assume arn:aws:iam::$accid:role/$CC_ROLE_NAME -s . policies.yml; done
     finally:
       - echo This always runs even if the update or install command fails
   post_build:
