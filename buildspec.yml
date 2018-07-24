@@ -20,7 +20,7 @@ phases:
       - echo Entered the pre_build phase...
       - echo GitHub commit SHA $CODEBUILD_RESOLVED_SOURCE_VERSION
       - |-
-        curl -s -H "Authorization: token $GITHUB_TOKEN" -H "user-agent: node.js" https://api.github.com/repos/$GITHUB_OWNER/$GITHUB_REPO/commits/$CODEBUILD_RESOLVED_SOURCE_VERSION |jq ".files[].filename" | grep "policies" | sed "s/policies-//" | sed "s/.yml//" > /tmp/changed_github_files.txt"
+        curl -s -H "Authorization: token $GITHUB_TOKEN" -H "user-agent: node.js" https://api.github.com/repos/$GITHUB_OWNER/$GITHUB_REPO/commits/$CODEBUILD_RESOLVED_SOURCE_VERSION |jq ".files[].filename" | grep "policies" | sed "s/policies-//" | sed "s/.yml//" > /tmp/changed_github_files.txt
       - cat /tmp/changed_github_files.txt
       - virtualenv --python=python2 custodian
       - . custodian/bin/activate
