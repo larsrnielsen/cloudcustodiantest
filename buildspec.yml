@@ -1,0 +1,57 @@
+# Environment dependencies:
+# - LAMBDA_ROLE_NAME name of role the Cloud Custodian Lambdas uses. This is not the ARN, but name
+# - NOTIFY_SNS_TOPIC_ARN Topic Cloud Custodian uses when notify action is used. This is ARN.
+# - CC_ROLE_NAME name of role Cloud Custodian assumes when about to run. This is not the ARN, but name
+
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - apt-get update -y
+      - pip install --upgrade pip
+      - pip install virtualenv
+    finally:
+      - echo This always runs even if the update or install command fails
+  pre_build:
+    commands:
+      - echo Entered the pre_build phase...
+      - echo GitHub commit SHA $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - curl -s -H "Authorization: token $GITHUB_TOKEN" -H "user-agent: node.js" https://api.github.com/repos/$GITHUB_OWNER/$GITHUB_REPO/commits/$CODEBUILD_RESOLVED_SOURCE_VERSION |jq ".files[].filename" | grep "buildspec" | sed "s/buildspec-//" | sed "s/.yml//" > /tmp/changed_github_files.txt
+      - cat /tmp/changed_github_files.txt
+      - virtualenv --python=python2 custodian
+      - . custodian/bin/activate
+      - pip install c7n
+
+#      - echo Lambdas will use role $LAMBDA_ROLE_ARN
+#      - sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^$LAMBDA_ROLE_ARN^" policies-$ACCOUNT_ID.yml > policies.yml
+#      - sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml
+#      - sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$ACCOUNT_ID^" policies.yml
+
+    finally:
+      - echo This always runs even if the update or install command fails
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - while read -r accid < /tmp/changed_github_files.txt; do sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^arn:aws:iam::$accid:role/$LAMBDA_ROLE_NAME^" policies-$accid.yml > policies.yml; sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml; sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$accid^" policies.yml; custodian run --assume arn:aws:iam::$accid:role/$CC_ROLE_NAME -s . policies-$accid.yml; done
+    finally:
+      - echo This always runs even if the update or install command fails
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`
+
+# If environment specific stuff is needed
+# -------------------------------------------
+#build:
+#     commands:
+#       - echo "${CODEBUILD_BUILD_ARN}"
+#       - |
+#         if expr "${CODEBUILD_BUILD_ARN}" : ".*build/MyProjectDev-" >/dev/null; then
+#           yarn run build-dev;
+#         fi
+#       - |
+#         if expr "${CODEBUILD_BUILD_ARN}" : ".*build/MyProject-" >/dev/null; then
+#           yarn run build-prod;
+#         fi
