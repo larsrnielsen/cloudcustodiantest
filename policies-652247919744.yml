@@ -88,9 +88,9 @@ policies:
           event: RevokeSecurityGroupIngress
           ids: "requestParameters.groupId"
   filters:
-      - type: ingress
-        Cidr:
-          value: "0.0.0.0/0"
+    - type: ingress
+      Cidr:
+        value: "0.0.0.0/0"
   actions:
     - type: notify
       to: []
