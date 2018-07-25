@@ -1,381 +1,381 @@
 ---
 policies:
 
-#- name: ec2-invalid-ami
-#  resource: ec2
-#  description: |
-#    EC2 instances (RUN) using a non-harden AMI
-#  mode:
-#    type: ec2-instance-state
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - pending
-#  filters:
-#    - type: value
-#      key: OwnerId
-#      op: not-equal
-#      value: ACCOUNT_ID_PATCHED_BY_BUILD_SPEC
-#  actions:
-#      - type: notify
-#        to: []
-#        transport:
-#          type: sns
-#          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: lambda-require-rds-encrypted
-#  description: |
-#    RDS Instances Require Encryption.
-#  resource: rds
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#    - CreateDBInstance
-#  filters:
-#  - or:
-#    - Encrypted: false
-#    - type: value
-#      key: StorageEncrypted
-#      value: true
-#      op: ne
-#  actions:
-#      - type: notify
-#        to: []
-#        transport:
-#          type: sns
-#          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##      - delete
-#
-#- name: s3-global-access
-#  description: |
-#    Remove Global ACL's on buckets.
-#  resource: s3
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - source: s3.amazonaws.com
-#        event: CreateBucket
-#        ids: "requestParameters.bucketName"
-#      - source: s3.amazonaws.com
-#        event: PutBucketAcl
-#        ids: "requestParameters.bucketName"
-#  filters:
-#    - type: global-grants
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##    - type: delete-global-grants
-##      grantees:
-##        - "http://acs.amazonaws.com/groups/global/AllUsers"
-##        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
-#
-#- name: sg-revoke-public-tag2
-#  description: |
-#    Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
-#  resource: security-group
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - source: ec2.amazonaws.com
-#        event: AuthorizeSecurityGroupIngress
-#        ids: "requestParameters.groupId"
-#  filters:
-#    - type: ingress
-#      Cidr:
-#        value: 0.0.0.0/0
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##    - type: remove-permissions
-##      egress: matched
-#
-#- name: high-risk-security-groups-remediate
-#  resource: security-group
-#  description: |
-#    Remove any rule from a security group that allows 0.0.0.0/0 ingress
-#    and notify the user  who added the violating rule.
-#  mode:
-#      type: cloudtrail
-#      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#      events:
-#        - source: ec2.amazonaws.com
-#          event: AuthorizeSecurityGroupIngress
-#          ids: "requestParameters.groupId"
-#        - source: ec2.amazonaws.com
-#          event: AuthorizeSecurityGroupEgress
-#          ids: "requestParameters.groupId"
-#        - source: ec2.amazonaws.com
-#          event: RevokeSecurityGroupEgress
-#          ids: "requestParameters.groupId"
-#        - source: ec2.amazonaws.com
-#          event: RevokeSecurityGroupIngress
-#          ids: "requestParameters.groupId"
-#
-#- name: terminate-unencrypted-ebs
-#  description: |
-#    Terminate All Unencrypted EBS Volumes Upon Creation.
-#  resource: ebs
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - CreateVolume
-#  filters:
-#    - Encrypted: false
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##    - delete
-#
-#- name: ec2-require-encrypted-ebs-volumes
-#  description: |
-#    Permit Only Encrypted EBS Volumes.
-#  resource: ec2
-#  mode:
-#    type: ec2-instance-state
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#    - running
-#  filters:
-#    - type: ebs
-#      key: Encrypted
-#      value: false
-#      skip-devices:
-#      - "/dev/sda1"
-#      - "/dev/xvda"
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##    - stop
-#
-#- name: missing-standard-tags-on-EC2
-#  description: |
-#    Check for missing standard tags on EC2 resource
-#  resource: ec2
-#  mode:
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    type: cloudtrail
-#    events:
-#    - RunInstances
-#  filters:
-#    - or:
-#      - "tag:created_by": absent
-#      - "tag:Name": absent
-#      - "tag:Region": absent
-#      - "tag:RegionGroup": absent
-#      - "tag:PlatformTier": absent
-#      - "tag:Environment": absent
-#      - "tag:Application": absent
-#      - "tag:Team": absent
-#      - "tag:ApplicationInstanceClass": absent
-#      - "tag:DataClass": absent
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: ec2-old-instances
-#  resource: ec2
-#  description: |
-#    Running instances older than 30 days imposes a security risk
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  filters:
-#    - "State.Name": running
-#    - type: instance-age
-#      days: 30
-#  actions:
-#      - type: notify
-#        to: []
-#        transport:
-#          type: sns
-#          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: ancient-images-report
-#  resource: ami
-#  description: |
-#    Images older than 90 days imposes a security risk
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  filters:
-#    - type: image-age
-#      days: 90
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: elb-delete-new-internet-facing
-#  resource: elb
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - CreateLoadBalancer
-#  description: |
-#    ELBs are not allowed to be Internet facing
-#  filters:
-#    - Scheme: "internet-facing"
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: terminate-unencrypted-public-rds
-#  description: |
-#    Terminate all publicly available RDS upon creation
-#  resource: rds
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - CreateDBInstance
-#  filters:
-#    - or:
-#        - StorageEncrypted: false
-#        - PubliclyAccessible: true
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: elb-ssl-whitelist
-#  description: |
-#    HTTPS/SSL ELBs should only have whitelisted ciphers/protocols
-#  resource: elb
-#  mode:
-#    type: cloudtrail
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#    events:
-#      - CreateLoadBalancer
-#      - CreateLoadBalancerPolicy
-#      - SetLoadBalancerPoliciesOfListener
-#  filters:
-#    - type: ssl-policy
-#      whitelist: &POLICY
-#        - Protocol-TLSv1.2
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-##    - type: set-ssl-listener-policy
-##      name: CustodianEnforcedPolicy
-##      attributes: *POLICY
-#
-#- name: aws-cloudtrail-not-enabled
-#  resource: account
-#  description: |
-#    Accounts which do not have CloudTrails
-#    enabled.
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  filters:
-#    - type: check-cloudtrail
-#      global-events: true
-#      multi-region: true
-#      running: true
-#      kms: true
-#      file-digest: true
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: aws-config-not-enabled
-#  resource: account
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  description: |
-#    Accounts which do not have
-#    AWS config enabled.
-#  filters:
-#    - type: check-config
-#      all-resources: true
-#      global-resources: false
-#      running: true
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: appelb-logs
-#  resource: app-elb
-#  description: |
-#    Access logs for ELBs were not enabled
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  filters:
-#    - type: value
-#      key: access_logs.s3.enabled
-#      value: False
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#- name: user-missing-mfa
-#  resource: iam-user
-#  mode:
-#    type: periodic
-#    schedule: "rate(1 day)"
-#    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#  filters:
-#    - type: credential
-#      key: password_enabled
-#    - type: mfa-device
-#      value: empty
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#
-#
-#
-#
-#
-#
+- name: ec2-invalid-ami
+  resource: ec2
+  description: |
+    EC2 instances (RUN) using a non-harden AMI
+  mode:
+    type: ec2-instance-state
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - pending
+  filters:
+    - type: value
+      key: OwnerId
+      op: not-equal
+      value: ACCOUNT_ID_PATCHED_BY_BUILD_SPEC
+  actions:
+      - type: notify
+        to: []
+        transport:
+          type: sns
+          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: lambda-require-rds-encrypted
+  description: |
+    RDS Instances Require Encryption.
+  resource: rds
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+    - CreateDBInstance
+  filters:
+  - or:
+    - Encrypted: false
+    - type: value
+      key: StorageEncrypted
+      value: true
+      op: ne
+  actions:
+      - type: notify
+        to: []
+        transport:
+          type: sns
+          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#      - delete
+
+- name: s3-global-access
+  description: |
+    Remove Global ACL's on buckets.
+  resource: s3
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - source: s3.amazonaws.com
+        event: CreateBucket
+        ids: "requestParameters.bucketName"
+      - source: s3.amazonaws.com
+        event: PutBucketAcl
+        ids: "requestParameters.bucketName"
+  filters:
+    - type: global-grants
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#    - type: delete-global-grants
+#      grantees:
+#        - "http://acs.amazonaws.com/groups/global/AllUsers"
+#        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
+
+- name: sg-revoke-public-tag2
+  description: |
+    Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
+  resource: security-group
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - source: ec2.amazonaws.com
+        event: AuthorizeSecurityGroupIngress
+        ids: "requestParameters.groupId"
+  filters:
+    - type: ingress
+      Cidr:
+        value: 0.0.0.0/0
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#    - type: remove-permissions
+#      egress: matched
+
+- name: high-risk-security-groups-remediate
+  resource: security-group
+  description: |
+    Remove any rule from a security group that allows 0.0.0.0/0 ingress
+    and notify the user  who added the violating rule.
+  mode:
+      type: cloudtrail
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+      events:
+        - source: ec2.amazonaws.com
+          event: AuthorizeSecurityGroupIngress
+          ids: "requestParameters.groupId"
+        - source: ec2.amazonaws.com
+          event: AuthorizeSecurityGroupEgress
+          ids: "requestParameters.groupId"
+        - source: ec2.amazonaws.com
+          event: RevokeSecurityGroupEgress
+          ids: "requestParameters.groupId"
+        - source: ec2.amazonaws.com
+          event: RevokeSecurityGroupIngress
+          ids: "requestParameters.groupId"
+
+- name: terminate-unencrypted-ebs
+  description: |
+    Terminate All Unencrypted EBS Volumes Upon Creation.
+  resource: ebs
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - CreateVolume
+  filters:
+    - Encrypted: false
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#    - delete
+
+- name: ec2-require-encrypted-ebs-volumes
+  description: |
+    Permit Only Encrypted EBS Volumes.
+  resource: ec2
+  mode:
+    type: ec2-instance-state
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+    - running
+  filters:
+    - type: ebs
+      key: Encrypted
+      value: false
+      skip-devices:
+      - "/dev/sda1"
+      - "/dev/xvda"
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#    - stop
+
+- name: missing-standard-tags-on-EC2
+  description: |
+    Check for missing standard tags on EC2 resource
+  resource: ec2
+  mode:
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    type: cloudtrail
+    events:
+    - RunInstances
+  filters:
+    - or:
+      - "tag:created_by": absent
+      - "tag:Name": absent
+      - "tag:Region": absent
+      - "tag:RegionGroup": absent
+      - "tag:PlatformTier": absent
+      - "tag:Environment": absent
+      - "tag:Application": absent
+      - "tag:Team": absent
+      - "tag:ApplicationInstanceClass": absent
+      - "tag:DataClass": absent
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: ec2-old-instances
+  resource: ec2
+  description: |
+    Running instances older than 30 days imposes a security risk
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  filters:
+    - "State.Name": running
+    - type: instance-age
+      days: 30
+  actions:
+      - type: notify
+        to: []
+        transport:
+          type: sns
+          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: ancient-images-report
+  resource: ami
+  description: |
+    Images older than 90 days imposes a security risk
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  filters:
+    - type: image-age
+      days: 90
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: elb-delete-new-internet-facing
+  resource: elb
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - CreateLoadBalancer
+  description: |
+    ELBs are not allowed to be Internet facing
+  filters:
+    - Scheme: "internet-facing"
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: terminate-unencrypted-public-rds
+  description: |
+    Terminate all publicly available RDS upon creation
+  resource: rds
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - CreateDBInstance
+  filters:
+    - or:
+        - StorageEncrypted: false
+        - PubliclyAccessible: true
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: elb-ssl-whitelist
+  description: |
+    HTTPS/SSL ELBs should only have whitelisted ciphers/protocols
+  resource: elb
+  mode:
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - CreateLoadBalancer
+      - CreateLoadBalancerPolicy
+      - SetLoadBalancerPoliciesOfListener
+  filters:
+    - type: ssl-policy
+      whitelist: &POLICY
+        - Protocol-TLSv1.2
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+#    - type: set-ssl-listener-policy
+#      name: CustodianEnforcedPolicy
+#      attributes: *POLICY
+
+- name: aws-cloudtrail-not-enabled
+  resource: account
+  description: |
+    Accounts which do not have CloudTrails
+    enabled.
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  filters:
+    - type: check-cloudtrail
+      global-events: true
+      multi-region: true
+      running: true
+      kms: true
+      file-digest: true
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: aws-config-not-enabled
+  resource: account
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  description: |
+    Accounts which do not have
+    AWS config enabled.
+  filters:
+    - type: check-config
+      all-resources: true
+      global-resources: false
+      running: true
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: appelb-logs
+  resource: app-elb
+  description: |
+    Access logs for ELBs were not enabled
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  filters:
+    - type: value
+      key: access_logs.s3.enabled
+      value: False
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: user-missing-mfa
+  resource: iam-user
+  mode:
+    type: periodic
+    schedule: "rate(1 day)"
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+  filters:
+    - type: credential
+      key: password_enabled
+    - type: mfa-device
+      value: empty
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+
+
+
+
+
 
 
 
