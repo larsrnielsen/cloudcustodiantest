@@ -83,15 +83,16 @@ policies:
       events:
         - source: ec2.amazonaws.com
           event: AuthorizeSecurityGroupIngress
-          ids: "requestParameters.GroupId"
+          ids: "requestParameters.groupId"
         - source: ec2.amazonaws.com
           event: RevokeSecurityGroupIngress
-          ids: "requestParameters.GroupId"
+          ids: "requestParameters.groupId"
   filters:
-    - type: ingress
-      Cidr:
-        value: "0.0.0.0/0"
-    - "tag:CloudCustodianIgnore": absent
+    - and:
+      - type: ingress
+        Cidr:
+          value: "0.0.0.0/0"
+      - "tag:CloudCustodianIgnore": absent
   actions:
     - type: notify
       to: []
