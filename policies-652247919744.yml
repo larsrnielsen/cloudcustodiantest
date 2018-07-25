@@ -88,11 +88,9 @@ policies:
           event: RevokeSecurityGroupIngress
           ids: "requestParameters.groupId"
   filters:
-    - and:
       - type: ingress
         Cidr:
           value: "0.0.0.0/0"
-      - "tag:CloudCustodianIgnore": absent
   actions:
     - type: notify
       to: []
