@@ -32,7 +32,10 @@ phases:
     commands:
       - echo Entered the build phase...
       - echo Build started on `date`
-      - while read -r accid < /tmp/changed_github_files.txt; do sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^$LAMBDA_ROLE_ARN^" policies-$accid.yml > policies.yml; sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml; sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$accid^" policies.yml; custodian run -s . policies.yml; done
+      - sed "s^SOME_ROLE_PATCHED_BY_BUILD_SPEC^$LAMBDA_ROLE_ARN^" policies-$accid.yml > policies.yml
+      - sed -i "s^SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC^$NOTIFY_SNS_TOPIC_ARN^" policies.yml
+      - sed -i "s^ACCOUNT_ID_PATCHED_BY_BUILD_SPEC^$accid^" policies.yml
+      - custodian run -s . policies.yml
   post_build:
     commands:
       - echo Entered the post_build phase...
