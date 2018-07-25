@@ -73,7 +73,7 @@ policies:
 #        - "http://acs.amazonaws.com/groups/global/AllUsers"
 #        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
 
-- name: sg-revoke-public-tag
+- name: sg-revoke-public-tag2
   description: |
     Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
   resource: security-group
