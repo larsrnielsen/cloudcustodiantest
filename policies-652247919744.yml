@@ -104,6 +104,7 @@ policies:
     and notify the user  who added the violating rule.
   mode:
       type: cloudtrail
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
       events:
         - source: ec2.amazonaws.com
           event: AuthorizeSecurityGroupIngress
