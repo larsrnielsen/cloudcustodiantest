@@ -90,9 +90,7 @@ policies:
   filters:
     - type: ingress
       Cidr:
-        value: 0.0.0.0/0
-        op: eq
-        value_type: cidr
+        value: "0.0.0.0/0"
     - "tag:CloudCustodianIgnore": absent
   actions:
     - type: notify
@@ -146,7 +144,7 @@ policies:
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
 #    - stop
 
-- name: missing-standard-tags-on-EC3
+- name: missing-standard-tags-on-EC2
   description: |
     Check for missing standard tags on EC2 resource
   resource: ec2
