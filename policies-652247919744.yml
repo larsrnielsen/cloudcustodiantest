@@ -152,9 +152,9 @@ policies:
   resource: ec2
   mode:
     role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-    type: ec2-instance-state
+    type: cloudtrail
     events:
-    - running
+    - RunInstances
   filters:
     - or:
       - "tag:created_by": absent
