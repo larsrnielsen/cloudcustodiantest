@@ -72,28 +72,28 @@ policies:
 #      grantees:
 #        - "http://acs.amazonaws.com/groups/global/AllUsers"
 #        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
-#
-#- name: sg-revoke-public-tag
-#  description: |
-#    Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
-#  resource: security-group
-#  mode:
-#      type: cloudtrail
-#      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-#      events:
-#        - source: ec2.amazonaws.com
-#          event: AuthorizeSecurityGroupIngress
-#          ids: "requestParameters.groupId"
-#  filters:
-#    - type: ingress
-#      Cidr:
-#        value: 0.0.0.0/0
-#  actions:
-#    - type: notify
-#      to: []
-#      transport:
-#        type: sns
-#        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+
+- name: sg-revoke-public-tag
+  description: |
+    Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
+  resource: security-group
+  mode:
+      type: cloudtrail
+      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+      events:
+        - source: ec2.amazonaws.com
+          event: AuthorizeSecurityGroupIngress
+          ids: "requestParameters.groupId"
+  filters:
+    - type: ingress
+      Cidr:
+        value: 0.0.0.0/0
+  actions:
+    - type: notify
+      to: []
+      transport:
+        type: sns
+        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
 #    - type: remove-permissions
 #      egress: matched
 
