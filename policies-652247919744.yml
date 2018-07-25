@@ -146,7 +146,7 @@ policies:
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
 #    - stop
 
-- name: missing-standard-tags-on-EC2
+- name: missing-standard-tags-on-EC3
   description: |
     Check for missing standard tags on EC2 resource
   resource: ec2
