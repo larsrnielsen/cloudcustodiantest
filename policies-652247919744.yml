@@ -84,9 +84,6 @@ policies:
         - source: ec2.amazonaws.com
           event: AuthorizeSecurityGroupIngress
           ids: "requestParameters.groupId"
-        - source: ec2.amazonaws.com
-          event: RevokeSecurityGroupIngress
-          ids: "requestParameters.groupId"
   filters:
     - type: ingress
       Cidr:
