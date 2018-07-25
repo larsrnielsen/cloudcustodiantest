@@ -157,16 +157,16 @@ policies:
     - running
   filters:
     - or:
-      - "tag:created_by": missing
-      - "tag:Name": missing
-      - "tag:Region": missing
-      - "tag:RegionGroup": missing
-      - "tag:PlatformTier": missing
-      - "tag:Environment": missing
-      - "tag:Application": missing
-      - "tag:Team": missing
-      - "tag:ApplicationInstanceClass": missing
-      - "tag:DataClass": missing
+      - "tag:created_by": absent
+      - "tag:Name": absent
+      - "tag:Region": absent
+      - "tag:RegionGroup": absent
+      - "tag:PlatformTier": absent
+      - "tag:Environment": absent
+      - "tag:Application": absent
+      - "tag:Team": absent
+      - "tag:ApplicationInstanceClass": absent
+      - "tag:DataClass": absent
   actions:
     - type: notify
       to: []
