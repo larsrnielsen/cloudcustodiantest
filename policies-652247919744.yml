@@ -78,12 +78,12 @@ policies:
     Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
   resource: security-group
   mode:
-      type: cloudtrail
-      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-      events:
-        - source: ec2.amazonaws.com
-          event: AuthorizeSecurityGroupIngress
-          ids: "requestParameters.groupId"
+    type: cloudtrail
+    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
+    events:
+      - source: ec2.amazonaws.com
+        event: AuthorizeSecurityGroupIngress
+        ids: "requestParameters.groupId"
   filters:
     - type: ingress
       Cidr:
@@ -97,27 +97,26 @@ policies:
 #    - type: remove-permissions
 #      egress: matched
 
-- name: sg-revoke-public-tag3
-  description: |
-    Restrict Ingress Traffic Via IP '0.0.0.0/0' On All Ports.
+- name: high-risk-security-groups-remediate
   resource: security-group
+  description: |
+    Remove any rule from a security group that allows 0.0.0.0/0 ingress
+    and notify the user  who added the violating rule.
   mode:
       type: cloudtrail
-      role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
       events:
         - source: ec2.amazonaws.com
           event: AuthorizeSecurityGroupIngress
           ids: "requestParameters.groupId"
         - source: ec2.amazonaws.com
+          event: AuthorizeSecurityGroupEgress
+          ids: "requestParameters.groupId"
+        - source: ec2.amazonaws.com
+          event: RevokeSecurityGroupEgress
+          ids: "requestParameters.groupId"
+        - source: ec2.amazonaws.com
           event: RevokeSecurityGroupIngress
           ids: "requestParameters.groupId"
-  filters:
-    - type: ingress
-      Cidr:
-        value: 0.0.0.0/0
-        op: eq
-        value_type: cidr
-    - "tag:revoke": absent
 
 - name: terminate-unencrypted-ebs
   description: |
