@@ -1,27 +1,6 @@
 ---
 policies:
 
-- name: ec2-invalid-ami
-  resource: ec2
-  description: |
-    EC2 instances (RUN) using a non-harden AMI
-  mode:
-    type: ec2-instance-state
-    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-    events:
-      - pending
-  filters:
-    - type: value
-      key: OwnerId
-      op: not-equal
-      value: ACCOUNT_ID_PATCHED_BY_BUILD_SPEC
-  actions:
-      - type: notify
-        to: []
-        transport:
-          type: sns
-          topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-
 - name: lambda-require-rds-encrypted
   description: |
     RDS Instances Require Encryption.
