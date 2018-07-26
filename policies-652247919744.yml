@@ -88,7 +88,10 @@ policies:
   filters:
     - type: ingress
       Cidr:
-        value: 0.0.0.0/0
+        values:
+          - "0.0.0.0/0"
+          - "::/0"
+        op: in
   actions:
     - type: notify
       to: []
