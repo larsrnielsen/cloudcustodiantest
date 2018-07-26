@@ -21,6 +21,7 @@ policies:
         transport:
           type: sns
           topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+      - stop
 
 - name: lambda-require-rds-encrypted
   description: |
@@ -44,7 +45,7 @@ policies:
         transport:
           type: sns
           topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#      - delete
+      - delete
 
 - name: s3-global-access
   description: |
@@ -68,10 +69,10 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#    - type: delete-global-grants
-#      grantees:
-#        - "http://acs.amazonaws.com/groups/global/AllUsers"
-#        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
+    - type: delete-global-grants
+      grantees:
+        - "http://acs.amazonaws.com/groups/global/AllUsers"
+        - "http://acs.amazonaws.com/groups/global/AuthenticatedUsers"
 
 - name: sg-revoke-public-tag
   description: |
@@ -94,8 +95,8 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#    - type: remove-permissions
-#      egress: matched
+    - type: remove-permissions
+      egress: matched
 
 
 - name: terminate-unencrypted-ebs
@@ -115,7 +116,7 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#    - delete
+    - delete
 
 - name: ec2-require-encrypted-ebs-volumes
   description: |
@@ -139,7 +140,7 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#    - stop
+    - stop
 
 - name: missing-standard-tags-on-EC2
   description: |
@@ -223,6 +224,7 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+    - delete
 
 - name: terminate-unencrypted-public-rds
   description: |
@@ -243,6 +245,8 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+    - type: delete
+      skip-snapshot: true
 
 - name: elb-ssl-whitelist
   description: |
@@ -265,53 +269,9 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-#    - type: set-ssl-listener-policy
-#      name: CustodianEnforcedPolicy
-#      attributes: *POLICY
-
-- name: aws-cloudtrail-not-enabled
-  resource: account
-  description: |
-    Accounts which do not have CloudTrails
-    enabled.
-  mode:
-    type: periodic
-    schedule: "rate(1 day)"
-    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-  filters:
-    - type: check-cloudtrail
-      global-events: true
-      multi-region: true
-      running: true
-      kms: true
-      file-digest: true
-  actions:
-    - type: notify
-      to: []
-      transport:
-        type: sns
-        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-
-- name: aws-config-not-enabled
-  resource: account
-  mode:
-    type: periodic
-    schedule: "rate(1 day)"
-    role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
-  description: |
-    Accounts which do not have
-    AWS config enabled.
-  filters:
-    - type: check-config
-      all-resources: true
-      global-resources: false
-      running: true
-  actions:
-    - type: notify
-      to: []
-      transport:
-        type: sns
-        topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
+    - type: set-ssl-listener-policy
+      name: CustodianEnforcedPolicy
+      attributes: *POLICY
 
 - name: appelb-logs
   resource: app-elb
@@ -349,7 +309,7 @@ policies:
       transport:
         type: sns
         topic: SOME_NOTIFICATION_TOPIC_PATCHED_BY_BUILD_SPEC
-
+    - delete
 
 
 
