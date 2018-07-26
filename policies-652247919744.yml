@@ -125,7 +125,7 @@ policies:
 
 - name: missing-standard-tags-on-EC2
   description: |
-    Check for missing standard tags on EC2 resource
+    Check for missing standard tags (created_by, Name, Region, Environment, Team)  on EC2 resource
   resource: ec2
   mode:
     role: SOME_ROLE_PATCHED_BY_BUILD_SPEC
@@ -137,13 +137,8 @@ policies:
       - "tag:created_by": absent
       - "tag:Name": absent
       - "tag:Region": absent
-      - "tag:RegionGroup": absent
-      - "tag:PlatformTier": absent
       - "tag:Environment": absent
-      - "tag:Application": absent
       - "tag:Team": absent
-      - "tag:ApplicationInstanceClass": absent
-      - "tag:DataClass": absent
   actions:
     - type: notify
       to: []
